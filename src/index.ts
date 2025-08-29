@@ -12,7 +12,6 @@ const UPTERM_SOCKET_POLL_INTERVAL = 1000;
 const UPTERM_READY_MAX_RETRIES = 10;
 const SESSION_STATUS_POLL_INTERVAL = 5000;
 const SUPPORTED_UPTERM_ARCHITECTURES = ['amd64', 'arm64'] as const;
-const TMUX_DIMENSIONS = {width: 132, height: 43};
 
 type UptermArchitecture = (typeof SUPPORTED_UPTERM_ARCHITECTURES)[number];
 
@@ -163,7 +162,7 @@ async function startUptermSession(): Promise<void> {
   core.info(`Creating a new session. Connecting to upterm server ${uptermServer}`);
   try {
     await execShellCommand(
-      `tmux new -d -s upterm-wrapper -x ${TMUX_DIMENSIONS.width} -y ${TMUX_DIMENSIONS.height} "upterm host --accept --server '${uptermServer}' ${authorizedKeysParameter} --force-command 'tmux attach -t upterm' -- tmux new -s upterm -x ${TMUX_DIMENSIONS.width} -y ${TMUX_DIMENSIONS.height}"`
+      `tmux new -d -s upterm-wrapper "upterm host --accept --server '${uptermServer}' ${authorizedKeysParameter} --force-command 'tmux attach -t upterm' -- tmux new -s upterm"`
     );
     // Resize terminal for largest client by default
     await execShellCommand('tmux set -t upterm-wrapper window-size largest; tmux set -t upterm window-size largest');
